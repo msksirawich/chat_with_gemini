@@ -3,7 +3,6 @@ import pathlib
 import textwrap
 import google.generativeai as genai
 import pandas as pd
-from IPython.display import display
 from IPython.display import Markdown
 import streamlit as st
 
