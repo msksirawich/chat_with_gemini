@@ -173,6 +173,7 @@ def gen_with_rag(question):
 
     Remember that your code will be executed directly, so it must run without errors and produce clear, insightful results with no index columns visible in any output.
     """
+    
     return prompt
 
 # Execute generated code and display results
