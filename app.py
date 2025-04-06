@@ -98,13 +98,15 @@ def gen_with_rag(question):
     2. The code will be executed, so ensure it's correct and handles edge cases.
     3. Always convert the 'date' column to datetime if it's not already.
     4. Store the result in a variable named `ANSWER`.
-    5. Include visualizations using matplotlib, seaborn, or plotly when appropriate.
+    5. Include visualizations using Streamlit's native charting functions (st.bar_chart, st.line_chart, st.area_chart) 
+       or Plotly for more complex visualizations.
     6. Format your output as follows:
        - First provide a brief explanation of your approach
        - Then provide the code in a markdown code block
        - Then explain what the code does step by step
     7. If the user's question is unclear, ask for clarification rather than making assumptions.
     8. Don't include code for loading data - assume the DataFrame is already available as `{df_name}`.
+    9. DO NOT use matplotlib or seaborn for visualizations. Only use Streamlit's native charts or Plotly.
     
     Remember that this is Iowa liquor sales data containing information about sales transactions, 
     including details like invoice numbers, dates, store information, product details, and sales figures.
@@ -114,8 +116,12 @@ def gen_with_rag(question):
 # Execute generated code and display results
 def execute_code_and_show_results(code_to_execute, transaction_df):
     try:
-        # Create local namespace with the DataFrame
-        local_namespace = {"transaction_df": transaction_df, "pd": pd}
+        # Create local namespace with the DataFrame and streamlit
+        local_namespace = {
+            "transaction_df": transaction_df, 
+            "pd": pd,
+            "st": st
+        }
         
         # Execute the code in the local namespace
         exec(code_to_execute, globals(), local_namespace)
@@ -132,10 +138,10 @@ def execute_code_and_show_results(code_to_execute, transaction_df):
                 st.write("### Result List:")
                 for item in result:
                     st.write(item)
-            elif hasattr(result, 'figure'):
-                # It's likely a matplotlib or seaborn plot
+            elif str(type(result)).find("plotly") != -1:
+                # It's a plotly figure
                 st.write("### Visualization:")
-                st.pyplot(result.figure)
+                st.plotly_chart(result, use_container_width=True)
             else:
                 st.write("### Result:")
                 st.write(result)
