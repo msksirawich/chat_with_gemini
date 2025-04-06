@@ -62,7 +62,9 @@ def gen_with_rag(question):
     query_result = {df_name}[{df_name}['age'] > 30]
     """
 
-    return prompt
+    query = response.text.replace("```", "#")
+
+    return query
 
 try:
     key = st.secrets["gemini_api_key"]
@@ -86,7 +88,10 @@ try:
 
     if prompt := st.chat_input("Enter Text Here: "):
         st.chat_message('user').markdown(prompt)
-        response = st.session_state.chat.send_message(gen_with_rag(prompt))
+
+        query = gen_with_rag('How many total sale in jan 2025?')
+
+        response = st.session_state.chat.send_message(exec(query))
         with st.chat_message('assistant'):
             # response.text
             st.markdown(response.text)
