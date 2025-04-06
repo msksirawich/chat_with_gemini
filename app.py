@@ -49,6 +49,7 @@ try:
 
     if prompt := st.chat_input("Enter Text Here: "):
         st.chat_message('user').markdown(prompt)
+        gen_with_rag("test","test")
         response = st.session_state.chat.send_message(prompt)
         with st.chat_message('assistant'):
             st.markdown(response.text)
