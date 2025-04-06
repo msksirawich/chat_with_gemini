@@ -24,6 +24,7 @@ def setup_db():
 def gen_with_rag(question, prompt):
 
     transaction_df, data_dict_df, data_dict_text, df_name = setup_db()
+    print(data_dict_df)
 
 try:
     key = st.secrets["gemini_api_key"]
@@ -47,9 +48,8 @@ try:
 
     if prompt := st.chat_input("Enter Text Here: "):
         st.chat_message('user').markdown(prompt)
-        gen_with_rag("test","test")
         response = st.session_state.chat.send_message(prompt)
         with st.chat_message('assistant'):
-            st.markdown(response.text)
+            st.markdown(response.text + gen_with_rag("test","test"))
 except Exception as e:
     st.error(f'Error: {e}')
