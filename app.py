@@ -24,7 +24,7 @@ try:
             st.markdown(message.parts[0].text)
 
     if prompt := st.chat_input("Enter Text Here: "):
-        st.chat_messsage('user').markdown(prompt)
+        st.chat_message('user').markdown(prompt)
         response = st.session_state.chat.send_message(prompt)
         with st.chat_message('assistant'):
             st.markdown(response.text)
