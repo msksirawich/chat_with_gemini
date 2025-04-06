@@ -20,9 +20,9 @@ with st.sidebar:
     if "api_key" not in st.session_state:
         st.session_state.api_key = ""
     
-    api_key = st.text_input("Enter Gemini API Key:", value=st.session_state.api_key, type="password")
-    if api_key:
-        st.session_state.api_key = api_key
+    # api_key = st.text_input("Enter Gemini API Key:", value=st.session_state.api_key, type="password")
+    # if api_key:
+    #     st.session_state.api_key = api_key
     
     st.divider()
     
