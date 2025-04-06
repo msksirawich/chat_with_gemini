@@ -5,7 +5,7 @@ import streamlit as st
 
 try:
     key = st.secrets["gemini_api_key"]
-    genai.configure(api_key='AIzaSyBMfuMpGIQbgG1_vIzdbgHg6dGftDp6IDc')
+    genai.configure(api_key=key)
     model = genai.GenerativeModel('gemini-2.0-flash-lite')
 
     if "chat" not in st.session_state:
