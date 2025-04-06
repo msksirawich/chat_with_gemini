@@ -89,7 +89,7 @@ try:
     if prompt := st.chat_input("Enter Text Here: "):
         st.chat_message('user').markdown(prompt)
 
-        query = gen_with_rag('How many total sale in jan 2025?')
+        query = gen_with_rag(prompt)
 
         response = st.session_state.chat.send_message(exec(query))
         with st.chat_message('assistant'):
