@@ -11,8 +11,8 @@ import streamlit as st
 #     return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
 
 def setup_db():
-    transaction_df = pd.read_csv('/data/transactions.csv')
-    data_dict_df = pd.read_csv('/data/data_dict.csv')
+    transaction_df = pd.read_csv('./data/transactions.csv')
+    data_dict_df = pd.read_csv('./data/data_dict.csv')
     data_dict_text = '\n'.join('- '+data_dict_df['column_name']+
                             ': '+data_dict_df['data_type']+
                             '. '+data_dict_df['description'])
