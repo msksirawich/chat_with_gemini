@@ -76,40 +76,30 @@ def gen_with_rag(question):
     transaction_df, data_dict_df, data_dict_text, df_name, example_record = setup_db()
     
     prompt = f"""
-    You are a helpful Python code generator specializing in data analysis.
+    You are a helpful Python code generator.
     Your goal is to write Python code snippets based on the user's question
-    and the provided DataFrame information about Iowa liquor sales.
+    and the provided DataFrame information.
 
     Here's the context:
     **User Question:**
     {question}
-    
     **DataFrame Name:**
     {df_name}
-    
-    **DataFrame Details (data dictionary):**
+    **DataFrame Details:**
     {data_dict_text}
-    
-    **Sample Data (Top 3 Rows):**
+    **Sample Data (Top 2 Rows):**
     {example_record}
 
     **Instructions:**
-    1. Write Python code that addresses the user's question by querying or manipulating the DataFrame.
-    2. The code will be executed, so ensure it's correct and handles edge cases.
-    3. Always convert the 'date' column to datetime if it's not already.
-    4. Store the result in a variable named `ANSWER`.
-    5. Include visualizations using Streamlit's native charting functions (st.bar_chart, st.line_chart, st.area_chart) 
-       or Plotly for more complex visualizations.
-    6. Format your output as follows:
-       - First provide a brief explanation of your approach
-       - Then provide the code in a markdown code block
-       - Then explain what the code does step by step
-    7. If the user's question is unclear, ask for clarification rather than making assumptions.
-    8. Don't include code for loading data - assume the DataFrame is already available as `{df_name}`.
-    9. DO NOT use matplotlib or seaborn for visualizations. Only use Streamlit's native charts or Plotly.
-    
-    Remember that this is Iowa liquor sales data containing information about sales transactions, 
-    including details like invoice numbers, dates, store information, product details, and sales figures.
+    1. Write Python code that addresses the user's question by querying or
+    manipulating the DataFrame.
+    2. **Crucially, use the `exec()` function to execute the generated code.**
+    3. Do not import pandas
+    4. Change date column type to datetime
+    5. **Store the result of the executed code in a variable named `ANSWER`.** This variable should hold the answer to the user's question (e.g., a filtered DataFrame, a calculated value, etc.).
+    6. Assume the DataFrame is already loaded into a pandas DataFrame object named `{df_name}`. Do not include code to load the DataFrame.
+    7. Keep the generated code concise and focused on answering the question.
+    8. If the question requires a specific output format (e.g., a list, a single value), ensure the `query_result` variable holds that format.
 
     **Example:**
     If the user asks: "Show me the rows where the 'age' column is
