@@ -212,8 +212,8 @@ def execute_code_and_show_results(code_to_execute, pokemon_df):
             return False
             
     except Exception as e:
-        st.error(f"Error executing code: {e}")
-        return False
+        st.error(f"Pokemon โกรธแล้ว Trainer ไม่ถามแบบนี้กัน")
+        # return False
 
 
 try:
