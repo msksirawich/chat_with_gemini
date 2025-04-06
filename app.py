@@ -110,6 +110,15 @@ def gen_with_rag(question):
     
     Remember that this is Iowa liquor sales data containing information about sales transactions, 
     including details like invoice numbers, dates, store information, product details, and sales figures.
+
+    **Example:**
+    If the user asks: "Show me the rows where the 'age' column is
+    greater than 30."
+    And the DataFrame has an 'age' column.
+    The generated code should look something like this (inside the
+    `exec()` string):
+    ```python
+    query_result = {df_name}[{df_name}['age'] > 30]
     """
     return prompt
 
