@@ -1,7 +1,31 @@
 
+import pathlib
+import textwrap
 import google.generativeai as genai
+import pandas as pd
+from IPython.display import display
+from IPython.display import Markdown
 import streamlit as st
 
+
+def to_markdown(text):
+    text = text.replace('.', ' *')
+    return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
+
+def setup_db():
+    transaction_df = pd.read_csv('/data/transactions.csv')
+    data_dict_df = pd.read_csv('/data/data_dict.csv')
+    data_dict_text = '\n'.join('- '+data_dict_df['column_name']+
+                            ': '+data_dict_df['data_type']+
+                            '. '+data_dict_df['description'])
+
+    df_name = 'transaction_df'
+
+    return transaction_df, data_dict_df, data_dict_text, df_name
+
+def gen_with_rag(question, prompt):
+
+    transaction_df, data_dict_df, data_dict_text, df_name = setup_db()
 
 try:
     key = st.secrets["gemini_api_key"]
