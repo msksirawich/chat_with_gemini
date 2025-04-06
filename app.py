@@ -147,16 +147,17 @@ def gen_with_rag(question):
     2. Follow these implementation guidelines:
     - Store your final result in a variable named `ANSWER`
     - NEVER show index columns in output (use `.reset_index(drop=True)` for DataFrames or `index=False` in display methods)
-    - Use only Streamlit native visualization functions or Plotly (NO matplotlib or seaborn)
+    - Use ONLY Streamlit's native visualization functions (st.bar_chart, st.line_chart, st.area_chart)
+    - DO NOT use Plotly, matplotlib, or seaborn
     - Handle all edge cases and potential errors gracefully
     - Optimize for readability and performance
     - Do not include code to load the DataFrame - it's already available as `{df_name}`
 
     3. For visualizations:
-    - Use appropriate color schemes that match Pokémon types (e.g., red for Fire, blue for Water)
-    - Create interactive charts with Plotly when detailed exploration would be valuable
-    - Use Streamlit's built-in charts (st.bar_chart, st.line_chart) for simpler visualizations
-    - Always include clear titles, labels, and legends
+    - Use Streamlit's built-in charts (st.bar_chart, st.line_chart, st.area_chart) for all visualizations
+    - Prepare data in the appropriate format for Streamlit's native charts
+    - When needed, create multiple charts to show different aspects of the data
+    - Always include clear titles and labels using st.write() or st.markdown() before charts
 
     4. Add context and insights to numerical results:
     - When comparing Pokémon, explain the significance of the differences
@@ -201,10 +202,6 @@ def execute_code_and_show_results(code_to_execute, pokemon_df):
                 st.write("### Result List:")
                 for item in result:
                     st.write(item)
-            elif str(type(result)).find("plotly") != -1:
-                # It's a plotly figure
-                st.write("### Visualization:")
-                st.plotly_chart(result, use_container_width=True)
             else:
                 st.write("### Result:")
                 st.write(result)
