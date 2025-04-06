@@ -58,12 +58,12 @@ def configure_gemini():
     try:
         if st.session_state.api_key:
             genai.configure(api_key=st.session_state.api_key)
-            return genai.GenerativeModel('gemini-1.5-flash')
+            return genai.GenerativeModel('gemini-2.0-flash-lite')
         else:
             try:
                 key = st.secrets["gemini_api_key"]
                 genai.configure(api_key=key)
-                return genai.GenerativeModel('gemini-1.5-flash')
+                return genai.GenerativeModel('gemini-2.0-flash-lite')
             except:
                 st.sidebar.warning("Please enter a valid API key in the sidebar.")
                 return None
