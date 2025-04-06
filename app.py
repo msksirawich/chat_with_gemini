@@ -123,40 +123,55 @@ def gen_with_rag(question):
     pokemon_df, data_dict_df, data_dict_text, df_name, example_record = setup_db()
     
     prompt = f"""
-    You are a helpful Python code generator specializing in Pokémon data analysis.
-    Your goal is to write Python code snippets based on the user's question
-    and the provided DataFrame information about Pokémon.
+    You are an expert Python data scientist specializing in Pokémon analysis and visualization.
+    Your task is to generate executable, production-quality Python code that answers the user's question
+    about the Pokémon dataset.
 
-    Here's the context:
-    **User Question:**
+    ## Context
+    **User Query:**
     {question}
-    
-    **DataFrame Name:**
-    {df_name}
-    
-    **DataFrame Details (data dictionary):**
+
+    **Available Data:**
+    - DataFrame variable name: `{df_name}`
+    - This DataFrame contains complete information about Pokémon, their stats, types, and battle characteristics
+    - The DataFrame is already loaded and ready to use
+
+    **Data Dictionary:**
     {data_dict_text}
-    
-    **Sample Data (Top 3 Rows):**
+
+    **Sample Data:**
     {example_record}
 
-    **Instructions:**
-    1. Write Python code that addresses the user's question by querying or manipulating the DataFrame.
-    2. The code will be executed, so ensure it's correct and handles edge cases.
-    3. Store the result in a variable named `ANSWER`.
-    4. IMPORTANT: Always set `ANSWER` so that index labels are NOT displayed in output. Use methods like `.reset_index(drop=True)` or display parameters like `index=False` as needed.
-    5. Include visualizations using Streamlit's native charting functions (st.bar_chart, st.line_chart, st.area_chart) 
-       or Plotly for more complex visualizations.
-    6. Format your output as follows:
-       - First provide a brief explanation of your approach
-       - Then provide the code in a markdown code block
-       - Then explain what the code does step by step
-    7. If the user's question is unclear, ask for clarification rather than making assumptions.
-    8. Don't include code for loading data - assume the DataFrame is already available as `{df_name}`.
-    9. DO NOT use matplotlib or seaborn for visualizations. Only use Streamlit's native charts or Plotly.
-    
-    Remember that this dataset contains information about Pokémon, including their stats, types, abilities, 
-    and other characteristics from the Pokémon games.
+    ## Requirements
+    1. Generate clean, efficient Python code that directly addresses the user's question
+    2. Follow these implementation guidelines:
+    - Store your final result in a variable named `ANSWER`
+    - NEVER show index columns in output (use `.reset_index(drop=True)` for DataFrames or `index=False` in display methods)
+    - Use only Streamlit native visualization functions or Plotly (NO matplotlib or seaborn)
+    - Handle all edge cases and potential errors gracefully
+    - Optimize for readability and performance
+    - Do not include code to load the DataFrame - it's already available as `{df_name}`
+
+    3. For visualizations:
+    - Use appropriate color schemes that match Pokémon types (e.g., red for Fire, blue for Water)
+    - Create interactive charts with Plotly when detailed exploration would be valuable
+    - Use Streamlit's built-in charts (st.bar_chart, st.line_chart) for simpler visualizations
+    - Always include clear titles, labels, and legends
+
+    4. Add context and insights to numerical results:
+    - When comparing Pokémon, explain the significance of the differences
+    - When analyzing type advantages, include strategic implications
+    - For stat analysis, relate findings to gameplay mechanics
+
+    ## Response Format
+    Your complete response should include:
+
+    1. A brief, clear explanation of your approach (2-3 sentences)
+    2. Your code solution in a Python code block (properly formatted and indented)
+    3. A step-by-step explanation of how your code works
+    4. Any additional insights about the results that would be valuable to a Pokémon trainer or analyst
+
+    Remember that your code will be executed directly, so it must run without errors and produce clear, insightful results with no index columns visible in any output.
     """
     return prompt
 
@@ -209,10 +224,12 @@ Ask questions about the Pokémon dataset and get AI-generated insights.
 The assistant will write and execute code to answer your questions.
 
 Some example questions:
-- Which Pokémon have the highest attack stat?
-- Compare the average stats between legendary and non-legendary Pokémon
-- What are the most common Pokémon types?
-- Which Pokémon have the best defense against fire-type moves?
+- Is it possible to build a classifier to identify legendary Pokemon?
+- How does height and weight of a Pokemon correlate with its various base stats?
+- What factors influence the Experience Growth and Egg Steps? Are these quantities correlated?
+- Which type is the strongest overall? Which is the weakest?
+- Which type is the most likely to be a legendary Pokemon?
+- Can you build a Pokemon dream team? A team of 6 Pokemon that inflicts the most damage while remaining relatively impervious to any other team of 6 Pokemon.
 """)
 
 # Initialize chat history
