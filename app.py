@@ -77,24 +77,24 @@ with st.sidebar:
     # Display data dictionary
     with st.expander("📊 Data Dictionary", expanded=False):
         data_dict_df = pd.DataFrame(create_data_dict())
-        st.dataframe(data_dict_df, use_container_width=True)
+        st.dataframe(data_dict_df, use_container_width=True, hide_index=True)
     
     # Display sample data
     with st.expander("🔍 Sample Data", expanded=False):
-        pokemon_df = pd.read_csv('./data/pokemon.csv')
-        st.dataframe(pokemon_df.head(5), use_container_width=True)
+        pokemon_df = pd.read_csv('./pokemon.csv')
+        st.dataframe(pokemon_df.head(5), use_container_width=True, hide_index=True)
 
 # Setup database connection
 @st.cache_data
 def setup_db():
-    pokemon_df = pd.read_csv('./data/pokemon.csv')
+    pokemon_df = pd.read_csv('./pokemon.csv')
     
     data_dict = create_data_dict()
     data_dict_df = pd.DataFrame(data_dict)
     data_dict_text = '\n'.join('- '+data_dict_df['column_name']+
                             ': '+data_dict_df['data_type']+
                             '. '+data_dict_df['description'])
-    example_record = pokemon_df.head(3).to_string()
+    example_record = pokemon_df.head(3).to_string(index=False)
 
     df_name = 'pokemon_df'
 
@@ -144,15 +144,16 @@ def gen_with_rag(question):
     1. Write Python code that addresses the user's question by querying or manipulating the DataFrame.
     2. The code will be executed, so ensure it's correct and handles edge cases.
     3. Store the result in a variable named `ANSWER`.
-    4. Include visualizations using Streamlit's native charting functions (st.bar_chart, st.line_chart, st.area_chart) 
+    4. IMPORTANT: Always set `ANSWER` so that index labels are NOT displayed in output. Use methods like `.reset_index(drop=True)` or display parameters like `index=False` as needed.
+    5. Include visualizations using Streamlit's native charting functions (st.bar_chart, st.line_chart, st.area_chart) 
        or Plotly for more complex visualizations.
-    5. Format your output as follows:
+    6. Format your output as follows:
        - First provide a brief explanation of your approach
        - Then provide the code in a markdown code block
        - Then explain what the code does step by step
-    6. If the user's question is unclear, ask for clarification rather than making assumptions.
-    7. Don't include code for loading data - assume the DataFrame is already available as `{df_name}`.
-    8. DO NOT use matplotlib or seaborn for visualizations. Only use Streamlit's native charts or Plotly.
+    7. If the user's question is unclear, ask for clarification rather than making assumptions.
+    8. Don't include code for loading data - assume the DataFrame is already available as `{df_name}`.
+    9. DO NOT use matplotlib or seaborn for visualizations. Only use Streamlit's native charts or Plotly.
     
     Remember that this dataset contains information about Pokémon, including their stats, types, abilities, 
     and other characteristics from the Pokémon games.
@@ -179,7 +180,7 @@ def execute_code_and_show_results(code_to_execute, pokemon_df):
             # Display the result based on its type
             if isinstance(result, pd.DataFrame):
                 st.write("### Result DataFrame:")
-                st.dataframe(result, use_container_width=True)
+                st.dataframe(result, use_container_width=True, hide_index=True)
             elif isinstance(result, (list, tuple)):
                 st.write("### Result List:")
                 for item in result:
