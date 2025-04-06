@@ -3,13 +3,12 @@ import pathlib
 import textwrap
 import google.generativeai as genai
 import pandas as pd
-from IPython.display import Markdown
 import streamlit as st
 
 
-def to_markdown(text):
-    text = text.replace('.', ' *')
-    return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
+# def to_markdown(text):
+#     text = text.replace('.', ' *')
+#     return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
 
 def setup_db():
     transaction_df = pd.read_csv('/data/transactions.csv')
