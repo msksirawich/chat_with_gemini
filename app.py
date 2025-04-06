@@ -4,6 +4,8 @@ import textwrap
 import google.generativeai as genai
 import pandas as pd
 import streamlit as st
+from IPython.display import display
+from IPython.display import Markdown
 
 
 # def to_markdown(text):
