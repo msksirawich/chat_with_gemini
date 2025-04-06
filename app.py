@@ -24,7 +24,7 @@ def setup_db():
 def gen_with_rag(question, prompt):
 
     transaction_df, data_dict_df, data_dict_text, df_name = setup_db()
-    print(data_dict_df)
+    print(data_dict_text)
 
 try:
     key = st.secrets["gemini_api_key"]
