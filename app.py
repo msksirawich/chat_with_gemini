@@ -215,99 +215,105 @@ def execute_code_and_show_results(code_to_execute, pokemon_df):
         st.error(f"Error executing code: {e}")
         return False
 
-# Main app content
-st.title("Pokémon Data Analyzer")
-st.markdown("""
-Ask questions about the Pokémon dataset and get AI-generated insights.
-The assistant will write and execute code to answer your questions.
 
-Some example questions:
-- Is it possible to build a classifier to identify legendary Pokemon?
-- How does height and weight of a Pokemon correlate with its various base stats?
-- What factors influence the Experience Growth and Egg Steps? Are these quantities correlated?
-- Which type is the strongest overall? Which is the weakest?
-- Which type is the most likely to be a legendary Pokemon?
-- Can you build a Pokemon dream team? A team of 6 Pokemon that inflicts the most damage while remaining relatively impervious to any other team of 6 Pokemon.
-""")
+try:
 
-# Initialize chat history
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+    # Main app content
+    st.title("Pokémon Data Analyzer")
+    st.markdown("""
+    Ask questions about the Pokémon dataset and get AI-generated insights.
+    The assistant will write and execute code to answer your questions.
 
-# Display chat history
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+    Some example questions:
+    - Is it possible to build a classifier to identify legendary Pokemon?
+    - How does height and weight of a Pokemon correlate with its various base stats?
+    - What factors influence the Experience Growth and Egg Steps? Are these quantities correlated?
+    - Which type is the strongest overall? Which is the weakest?
+    - Which type is the most likely to be a legendary Pokemon?
+    - Can you build a Pokemon dream team? A team of 6 Pokemon that inflicts the most damage while remaining relatively impervious to any other team of 6 Pokemon.
+    """)
+
+    # Initialize chat history
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    # Display chat history
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+            
+            # If there's code to display
+            if "code" in message:
+                with st.expander("View Generated Code"):
+                    st.code(message["code"], language="python")
+
+    # Setup model
+    model = configure_gemini()
+
+    # User input
+    if prompt := st.chat_input("Ask a question about the Pokémon data:"):
+        # Add user message to chat history
+        st.session_state.messages.append({"role": "user", "content": prompt})
         
-        # If there's code to display
-        if "code" in message:
-            with st.expander("View Generated Code"):
-                st.code(message["code"], language="python")
+        # Display user message
+        with st.chat_message("user"):
+            st.markdown(prompt)
+        
+        # Get AI response if model is configured
+        if model:
+            with st.chat_message("assistant"):
+                with st.spinner("Generating response..."):
+                    # Load data
+                    pokemon_df, _, _, _, _ = setup_db()
+                    
+                    # Generate prompt with RAG context
+                    rag_prompt = gen_with_rag(prompt)
+                    
+                    # Get response from Gemini
+                    response = model.generate_content(rag_prompt)
+                    response_text = response.text
+                    
+                    # Display explanation part
+                    parts = response_text.split("```python")
+                    if len(parts) > 1:
+                        explanation = parts[0].strip()
+                        code_part = parts[1].split("```")[0].strip()
+                        
+                        # Show explanation
+                        st.markdown(explanation)
+                        
+                        # Show code
+                        st.code(code_part, language="python")
+                        
+                        # Execute code and show results
+                        with st.spinner("Executing code..."):
+                            execute_code_and_show_results(code_part, pokemon_df)
+                        
+                        # If there's post-code explanation
+                        if len(parts) > 2:
+                            st.markdown(parts[2].strip())
+                        
+                        # Save to chat history
+                        st.session_state.messages.append({
+                            "role": "assistant", 
+                            "content": explanation + 
+                                    (parts[2].strip() if len(parts) > 2 else ""),
+                            "code": code_part
+                        })
+                    else:
+                        # No code in the response, just show text
+                        st.markdown(response_text)
+                        st.session_state.messages.append({
+                            "role": "assistant", 
+                            "content": response_text
+                        })
+        else:
+            with st.chat_message("assistant"):
+                st.markdown("Please provide a valid Gemini API key in the sidebar to continue.")
+                st.session_state.messages.append({
+                    "role": "assistant", 
+                    "content": "Please provide a valid Gemini API key in the sidebar to continue."
+                })
 
-# Setup model
-model = configure_gemini()
-
-# User input
-if prompt := st.chat_input("Ask a question about the Pokémon data:"):
-    # Add user message to chat history
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    
-    # Display user message
-    with st.chat_message("user"):
-        st.markdown(prompt)
-    
-    # Get AI response if model is configured
-    if model:
-        with st.chat_message("assistant"):
-            with st.spinner("Generating response..."):
-                # Load data
-                pokemon_df, _, _, _, _ = setup_db()
-                
-                # Generate prompt with RAG context
-                rag_prompt = gen_with_rag(prompt)
-                
-                # Get response from Gemini
-                response = model.generate_content(rag_prompt)
-                response_text = response.text
-                
-                # Display explanation part
-                parts = response_text.split("```python")
-                if len(parts) > 1:
-                    explanation = parts[0].strip()
-                    code_part = parts[1].split("```")[0].strip()
-                    
-                    # Show explanation
-                    st.markdown(explanation)
-                    
-                    # Show code
-                    st.code(code_part, language="python")
-                    
-                    # Execute code and show results
-                    with st.spinner("Executing code..."):
-                        execute_code_and_show_results(code_part, pokemon_df)
-                    
-                    # If there's post-code explanation
-                    if len(parts) > 2:
-                        st.markdown(parts[2].strip())
-                    
-                    # Save to chat history
-                    st.session_state.messages.append({
-                        "role": "assistant", 
-                        "content": explanation + 
-                                  (parts[2].strip() if len(parts) > 2 else ""),
-                        "code": code_part
-                    })
-                else:
-                    # No code in the response, just show text
-                    st.markdown(response_text)
-                    st.session_state.messages.append({
-                        "role": "assistant", 
-                        "content": response_text
-                    })
-    else:
-        with st.chat_message("assistant"):
-            st.markdown("Please provide a valid Gemini API key in the sidebar to continue.")
-            st.session_state.messages.append({
-                "role": "assistant", 
-                "content": "Please provide a valid Gemini API key in the sidebar to continue."
-            })
+except Exception as e:
+    st.error(f"Pokemon โกรธแล้ว Trainer ไม่ถามแบบนี้กัน")
