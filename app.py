@@ -81,13 +81,13 @@ with st.sidebar:
     
     # Display sample data
     with st.expander("🔍 Sample Data", expanded=False):
-        pokemon_df = pd.read_csv('./pokemon.csv')
+        pokemon_df = pd.read_csv('./data/pokemon.csv')
         st.dataframe(pokemon_df.head(5), use_container_width=True, hide_index=True)
 
 # Setup database connection
 @st.cache_data
 def setup_db():
-    pokemon_df = pd.read_csv('./pokemon.csv')
+    pokemon_df = pd.read_csv('./data/pokemon.csv')
     
     data_dict = create_data_dict()
     data_dict_df = pd.DataFrame(data_dict)
